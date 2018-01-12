@@ -1,0 +1,37 @@
+<div class="ui grid">
+    <div class="center aligned column">
+        <img class="ui middle aligned centered small image logo" src="/assets/img/food.svg">
+        <h1>Eat-Da-Burger!</h1>
+    </div>
+</div>
+<div class="ui equal width grid">
+    <div class="orange column burger-display">
+        <div class="ui large celled ordered list">
+            {{#each burgers}}
+                {{#unless devoured}}
+                    {{> burger/ready burger_id=id}}
+                {{/unless}}
+            {{/each}}
+        </div>
+    </div>
+    <div class="yellow column burger-display">
+        <div class="ui large celled ordered list">
+            {{#each burgers}}
+                {{#if devoured}}
+                    {{> burger/eaten burger_id=id }}
+                {{/if}}
+            {{/each}}
+        </div>
+    </div>
+</div>
+<div class="ui centered grid">
+    <form class="ui form" id="new-burger-form">
+        <div class="field">
+            <label for="newBurger" class="">Please Enter a Burger to eat.</label>
+            <textarea name="newBurger" id="new-burger-name" cols="50" rows="3"></textarea>
+        </div>
+        <div class="ui error message">
+        </div>
+        <button class="ui massive blue button" type="submit">Submit</button>
+    </form>
+</div>
