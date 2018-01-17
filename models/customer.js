@@ -3,11 +3,10 @@ module.exports = function(sequelize, DataTypes) {
       name: DataTypes.STRING
     });
   
-    Customer.associate = function(models) {
-      Customer.hasMany(models.Burger, {
-        onDelete: "cascade"
-      });
-    };
-  
+    Customer.associate = function(models){
+      Customer.hasMany(models.burgers, {
+        onDelete: 'cascade'
+      })
+    }
     return Customer;
   };

@@ -3,24 +3,34 @@
         <img class="ui middle aligned centered small image logo" src="/assets/img/food.svg">
         <h1>Eat-Da-Burger!</h1>
     </div>
+
 </div>
+
+{{#if burgers}}
+    <div class="ui centered grid">
+        <div class="brown column burger-display">
+            <form class="ui form" id="customer-form">
+                <div class="field">
+                    <label for="customer" class="">Please enter your name:</label>
+                    <input name="customer" id="customer-name"></input>
+                </div>
+                <div class="ui error message" id="customer-error-message">
+                </div>
+            </form>
+        </div>
+    </div>
+{{/if}}
+
 <div class="ui equal width grid">
+
     <div class="orange column burger-display">
         <div class="ui large celled ordered list">
-            {{#each burgers}}
-                {{#unless devoured}}
-                    {{> burger/ready burger_id=id}}
-                {{/unless}}
-            {{/each}}
+            {{#each burgers}} {{#unless devoured}} {{> burger/ready burger_id=id burger_name=burger_name}} {{/unless}} {{/each}}
         </div>
     </div>
     <div class="yellow column burger-display">
         <div class="ui large celled ordered list">
-            {{#each burgers}}
-                {{#if devoured}}
-                    {{> burger/eaten burger_id=id }}
-                {{/if}}
-            {{/each}}
+            {{#each burgers}} {{#if devoured}} {{> burger/eaten burger_id=id burger_name=burger_name customer_name=customer.name}} {{/if}} {{/each}}
         </div>
     </div>
 </div>

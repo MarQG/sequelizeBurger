@@ -1,41 +1,65 @@
-var express = require('express');
 
-var router = express.Router();
-
-var burgers = require("../models/burger");
-
-router.get("/", function (req, res) {
-    burgers.all(function (data) {
-        res.render("index", {
-            burgers: data
+var db = require("../models");
+module.exports = function(app){
+    app.get("/", function (req, res) {
+        db.burgers.findAll({ include: [ db.customer] }).then(function (data) {
+            res.render("index",{
+                burgers:data
+            });
         });
     });
-});
-
-router.post('/api/burgers/', function (req, res) {
-    burgers.create(["burger_name"], [req.body.name], function (results) {
-        res.json({
-            id: results.insertId
+    
+    app.post('/api/burgers/', function (req, res) {
+        db.burgers.create({
+            burger_name: req.body.name
         });
     });
-});
-
-router.put("/api/burgers/:id", function (req, res) {
-    var condition = " id = " + req.params.id;
-    burgers.update(req.body, condition, function (results) {
-        if (results.changedRows === 0) {
-            return res.status(404).end();
-        } else {
-            res.status(200).end();
-        }
-
+    
+    app.put("/api/burgers/:id", function (req, res) {
+        db.customer.findOne({
+            where: {
+                name: req.body.customer
+            }
+        }).then(function(result) {
+            if(result === null){
+                db.customer.create({
+                    name: req.body.customer
+                }).then(function(results){
+                    db.burgers.update({
+                        devoured:true,
+                        customerId: results.get('id')
+                    },{
+                        where: {
+                            id: req.params.id
+                        }
+                    }).then(function(data){
+                        res.json(data);
+                    });
+                });
+            } else {
+                db.burgers.update({
+                    devoured:true,
+                    customerId: result.get('id')
+                },{
+                    where: {
+                        id: req.params.id
+                    }
+                }).then(function(data){
+                    res.json(data);
+                });
+            }
+        })
+        
+       
     });
-});
-
-router.delete("/api/burgers/:id", function (req, res) {
-    var condition = " id = " + req.params.id;
-    burgers.delete(condition, function (results) {
-        res.status(200).end();
-    });
-})
-module.exports = router;
+    
+    app.delete("/api/burgers/:id", function (req, res) {
+        db.burgers.destroy({
+            where: {
+                id: req.params.id
+            }
+        }).then(function(data){
+            res.json(data);
+        })
+    })
+}
